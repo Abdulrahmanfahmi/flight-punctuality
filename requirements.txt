@@ -1,0 +1,14 @@
+dlt[snowflake]
+requests
+pandas
+lxml
+dbt-core
+dbt-snowflake
+dagster
+dagster-webserver
+dagster-dbt
+dagster-dlt
+streamlit
+plotly
+snowflake-connector-python
+python-dotenv

@@ -1,0 +1,24 @@
+# Hemligheter
+.env
+.dlt/secrets.toml
+profiles.yml
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# dbt
+dbt_project/target/
+dbt_project/dbt_packages/
+dbt_project/logs/
+
+# Dagster
+.dagster_home/
+storage/
+logs/
+
+# OS / editor
+.DS_Store
+.vscode/
