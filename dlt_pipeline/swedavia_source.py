@@ -1,8 +1,18 @@
-import time 
-from datetime import datetime, timezone 
+import time
+from datetime import datetime, timezone
+
+import dlt  
 from dlt.sources.helpers import requests
-from dlt_pipeline.config import SWEDAVIA_BASE_URL
-from dlt_pipeline.config import REQUEST_PAUSE_SECONDS, SWEDAVIA_BASE_URL
+
+from dlt_pipeline.config import ( 
+    FLIGHT_TYPES,
+    REQUEST_PAUSE_SECONDS,
+    SWEDAVIA_AIRPORTS,
+    SWEDAVIA_BASE_URL,
+    get_extraction_dates,
+    get_swedavia_api_key,
+)
+
 
 def fetch_flights(airport: str, flight_type: str, date: str, api_key: str) -> list[dict]:
     url = f"{SWEDAVIA_BASE_URL}/{airport}/{flight_type}/{date}"
@@ -13,6 +23,7 @@ def fetch_flights(airport: str, flight_type: str, date: str, api_key: str) -> li
     response = requests.get(url, headers=headers, timeout=30)
     response.raise_for_status()
     return response.json().get("flights", [])
+
 
 def add_metadata(flight: dict, airport: str, flight_type: str, date: str) -> dict:
     time_field = "arrivalTime" if flight_type == "arrivals" else "departureTime"
@@ -26,6 +37,7 @@ def add_metadata(flight: dict, airport: str, flight_type: str, date: str) -> dic
         "extracted_at": datetime.now(timezone.utc).isoformat(),
         **flight,
     }
+
 
 def get_flights(flight_type: str, airports: list[str], dates: list[str], api_key: str):
     seen_keys = set()
@@ -43,10 +55,31 @@ def get_flights(flight_type: str, airports: list[str], dates: list[str], api_key
 
             time.sleep(REQUEST_PAUSE_SECONDS)
 
-if __name__ == "__main__":
-    from dlt_pipeline.config import get_extraction_dates, get_swedavia_api_key
 
+@dlt.source(name="swedavia", max_table_nesting=1)
+def swedavia_source(airports: list[str] | None = None, dates: list[str] | None = None):
+    """Ger två tabeller: arrivals och departures."""
+    api_key = get_swedavia_api_key()
+    airports = airports or SWEDAVIA_AIRPORTS
+    dates = dates or get_extraction_dates()
+
+    for flight_type in FLIGHT_TYPES:
+        yield dlt.resource(
+            get_flights(flight_type, airports, dates, api_key),
+            name=flight_type,
+            write_disposition="merge",
+            primary_key="flight_key",
+        )
+
+
+
+if __name__ == "__main__":
     today = get_extraction_dates()[:1]
-    records = list(get_flights("departures", ["ARN", "VBY"], today, get_swedavia_api_key()))
-    print("Totalt:", len(records), "avgångar")
-    print("Exempel:", records[0]["flight_key"])
+    source = swedavia_source(airports=["VBY"], dates=today)
+
+    print("Tabeller:", list(source.resources.keys()))
+    for name, resource in source.resources.items():
+        print(f"  {name}: write_disposition={resource.write_disposition}")
+
+    records = list(source)
+    print("Rader totalt:", len(records))
