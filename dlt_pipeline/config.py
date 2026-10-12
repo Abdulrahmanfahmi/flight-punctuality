@@ -16,6 +16,8 @@ DAYS_TO_EXTRACT = 3
 
 TIMEZONE = ZoneInfo("Europe/Stockholm")
 
+REQUEST_PAUSE_SECONDS = 0.5
+
 def get_extraction_dates(days: int = DAYS_TO_EXTRACT) -> list[str]:
     today = datetime.now(TIMEZONE).date()
     return [(today - timedelta(days=i)).isoformat() for i in range(days)]
