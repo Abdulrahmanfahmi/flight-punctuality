@@ -14,6 +14,11 @@ FLIGHT_TYPES = ["arrivals", "departures"]
 
 DAYS_TO_EXTRACT = 3
 
+
+WIKIPEDIA_AIRLINES_URL = "https://en.wikipedia.org/wiki/List_of_airline_codes"
+WIKIPEDIA_AIRPORTS_URL = "https://en.wikipedia.org/wiki/List_of_airports_in_Sweden"
+WIKIPEDIA_HEADERS = {"User-Agent": "flight-punctuality-student-project"}
+
 TIMEZONE = ZoneInfo("Europe/Stockholm")
 
 REQUEST_PAUSE_SECONDS = 0.5
