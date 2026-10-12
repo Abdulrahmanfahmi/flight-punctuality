@@ -1,0 +1,9 @@
+name: flight_punctuality
+version: "1.0.0"
+profile: flight_punctuality
+
+model-paths: ["models"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+
+clean-targets: ["target", "dbt_packages"]

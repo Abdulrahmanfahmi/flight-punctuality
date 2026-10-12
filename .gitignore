@@ -1,7 +1,6 @@
 # Hemligheter
 .env
 .dlt/secrets.toml
-profiles.yml
 
 # Python
 .venv/
@@ -13,6 +12,7 @@ __pycache__/
 dbt_project/target/
 dbt_project/dbt_packages/
 dbt_project/logs/
+dbt_project/.user.yml
 
 # Dagster
 .dagster_home/
