@@ -24,7 +24,7 @@ models:
       - name: airline_name
         tests:
           - not_null
-          
+
   - name: dim_date
     description: "En rad per dag, från första till sista flygdatumet"
     columns:
@@ -33,3 +33,37 @@ models:
         tests:
           - unique
           - not_null
+
+  - name: fct_flights
+    description: "En rad per flyg (ankomst eller avgång) vid en Swedavia-flygplats"
+    columns:
+      - name: flight_key
+        description: "Unik nyckel: flygplats + flightnummer + tidtabellstid"
+        tests:
+          - unique
+          - not_null
+      - name: airport_iata
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_airport')
+                field: airport_iata
+      - name: airline_icao
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_airline')
+                field: airline_icao
+      - name: flight_date
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_day
+      - name: flight_type
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['arrival', 'departure']
