@@ -24,3 +24,12 @@ models:
       - name: airline_name
         tests:
           - not_null
+          
+  - name: dim_date
+    description: "En rad per dag, från första till sista flygdatumet"
+    columns:
+      - name: date_day
+        description: "Datum, primärnyckel"
+        tests:
+          - unique
+          - not_null
