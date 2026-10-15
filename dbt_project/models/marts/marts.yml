@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: dim_airport
+    description: "Swedavias flygplatser, berikade med data från Wikipedia"
+    columns:
+      - name: airport_iata
+        description: "IATA-kod, primärnyckel"
+        tests:
+          - unique
+          - not_null
+      - name: airport_name
+        tests:
+          - not_null
