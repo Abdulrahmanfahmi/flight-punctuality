@@ -12,3 +12,15 @@ models:
       - name: airport_name
         tests:
           - not_null
+
+  - name: dim_airline
+    description: "Flygbolag som trafikerar Swedavias flygplatser. Namn från Swedavia, land från Wikipedia"
+    columns:
+      - name: airline_icao
+        description: "ICAO-kod, primärnyckel"
+        tests:
+          - unique
+          - not_null
+      - name: airline_name
+        tests:
+          - not_null
