@@ -1,0 +1,62 @@
+Project flight_punctuality {
+  database_type: 'Snowflake'
+  Note: 'Stjärnschema i FLIGHT_DB.MARTS. Analys av försenade ankomster och avgångar per flygbolag, flygplats och datum.'
+}
+
+Table fct_flights {
+  flight_key varchar [pk, note: 'Flygplats + flightnummer + tidtabellstid']
+  airport_iata varchar [not null]
+  airline_icao varchar
+  flight_date date [not null]
+  flight_id varchar
+  flight_type varchar [note: 'arrival eller departure']
+  status_code varchar
+  scheduled_at_utc timestamp_tz
+  actual_at_utc timestamp_tz
+  delay_minutes number [note: 'Verklig tid minus tidtabell, i minuter']
+  is_completed boolean [note: 'Har en verklig tid']
+  is_delayed boolean [note: 'Mer än 15 min sent. NULL om ej genomfört']
+  is_cancelled boolean [note: 'Status CAN']
+
+  Note: 'Faktatabell. En rad per flyg (ankomst eller avgång) vid en Swedavia-flygplats.'
+}
+
+Table dim_airport {
+  airport_iata varchar [pk]
+  airport_icao varchar
+  airport_name varchar [note: 'Från Wikipedia']
+  city varchar [note: 'Från Wikipedia']
+  usage varchar
+  passengers_2023 integer [note: 'Från Wikipedia']
+
+  Note: 'Dimension: Swedavias 10 flygplatser'
+}
+
+Table dim_airline {
+  airline_icao varchar [pk]
+  airline_iata varchar
+  airline_name varchar [note: 'Från Swedavia']
+  country varchar [note: 'Från Wikipedia']
+  callsign varchar [note: 'Från Wikipedia']
+  has_wikipedia_match boolean
+
+  Note: 'Dimension: flygbolag som trafikerar Swedavias flygplatser'
+}
+
+Table dim_date {
+  date_day date [pk]
+  year integer
+  month integer
+  month_name varchar
+  day_of_month integer
+  week_of_year integer
+  day_of_week integer [note: 'ISO: måndag = 1']
+  day_name varchar
+  is_weekend boolean
+
+  Note: 'Dimension: en rad per dag'
+}
+
+Ref: fct_flights.airport_iata > dim_airport.airport_iata
+Ref: fct_flights.airline_icao > dim_airline.airline_icao
+Ref: fct_flights.flight_date > dim_date.date_day
