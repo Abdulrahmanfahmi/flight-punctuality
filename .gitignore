@@ -16,6 +16,7 @@ dbt_project/.user.yml
 
 # Dagster
 .dagster_home/
+.tmp_dagster_home*/
 storage/
 logs/
 
