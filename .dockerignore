@@ -1,0 +1,27 @@
+# Hemligheter: får aldrig hamna i en image
+.env
+.dlt/secrets.toml
+.streamlit/secrets.toml
+
+# Lokal miljö och cache
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Git och editor
+.git/
+.vscode/
+.DS_Store
+
+# Genereras när containern körs
+dbt_project/target/
+dbt_project/logs/
+dbt_project/dbt_packages/
+dbt_project/.user.yml
+.dagster_home/
+.tmp_dagster_home*/
+
+# Behövs inte i någon container
+docs/
+snowflake_setup/
