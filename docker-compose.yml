@@ -1,0 +1,39 @@
+# Kör containrarna lokalt. Värdena hämtas från .env, som aldrig kopieras in i en image.
+# Varje container får bara de variabler den behöver (least privilege).
+services:
+  dagster:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.dagster
+    ports:
+      - "3000:3000"
+    environment:
+      SWEDAVIA_API_KEY: ${SWEDAVIA_API_KEY}
+      SNOWFLAKE_ACCOUNT: ${SNOWFLAKE_ACCOUNT}
+      SNOWFLAKE_WAREHOUSE: ${SNOWFLAKE_WAREHOUSE}
+      SNOWFLAKE_DATABASE: ${SNOWFLAKE_DATABASE}
+      SNOWFLAKE_DLT_USER: ${SNOWFLAKE_DLT_USER}
+      SNOWFLAKE_DLT_PASSWORD: ${SNOWFLAKE_DLT_PASSWORD}
+      SNOWFLAKE_DLT_ROLE: ${SNOWFLAKE_DLT_ROLE}
+      SNOWFLAKE_DBT_USER: ${SNOWFLAKE_DBT_USER}
+      SNOWFLAKE_DBT_PASSWORD: ${SNOWFLAKE_DBT_PASSWORD}
+      SNOWFLAKE_DBT_ROLE: ${SNOWFLAKE_DBT_ROLE}
+    volumes:
+      - dagster_home:/opt/dagster/dagster_home
+
+  streamlit:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.streamlit
+    ports:
+      - "8501:8501"
+    environment:
+      SNOWFLAKE_ACCOUNT: ${SNOWFLAKE_ACCOUNT}
+      SNOWFLAKE_WAREHOUSE: ${SNOWFLAKE_WAREHOUSE}
+      SNOWFLAKE_DATABASE: ${SNOWFLAKE_DATABASE}
+      SNOWFLAKE_STREAMLIT_USER: ${SNOWFLAKE_STREAMLIT_USER}
+      SNOWFLAKE_STREAMLIT_PASSWORD: ${SNOWFLAKE_STREAMLIT_PASSWORD}
+      SNOWFLAKE_STREAMLIT_ROLE: ${SNOWFLAKE_STREAMLIT_ROLE}
+
+volumes:
+  dagster_home:
